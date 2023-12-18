@@ -2,7 +2,7 @@ import css from './button.module.css';
 import PropTypes from 'prop-types';
 
 
-export default function Button({ onClick }) {
+const Button = ({ onClick }) => {
     return (
         <button type="button" className={css.button} onClick={onClick}>
             Load more
@@ -15,3 +15,4 @@ Button.propTypes = {
 };
 
 
+export default Button;

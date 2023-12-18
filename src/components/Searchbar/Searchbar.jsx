@@ -1,26 +1,24 @@
-import { Component } from "react";
+import { useState } from "react";
 import css from "./searchBar.module.css"
 
 
-class SearchBar extends Component {
-    state = {
-        input: ""
-    }
+const SearchBar = ({getInputValue})  => {
+    const [input, setInput] = useState ("")
 
-    search = event => {
+    const search = (event) => {
         event.preventDefault ()
-        this.props.getInputValue(this.state.input)
-        this.setState({input:''})
+        getInputValue(input)
+        setInput("")
     }
 
-    handleChange= event => {
-        this.setState({input:event.target.value})
+    const handleChange= event => {
+        setInput(event.target.value)
     }
 
-    render() {
+    
         return (
             <header className={css.searchbar}>
-                <form className={css.form} onSubmit={this.search}>
+                <form className={css.form} onSubmit={search}>
                     <button type="submit" className={css.button}>
                         <span className={css.buttonLabel}>Search</span>
                     </button>
@@ -30,8 +28,8 @@ class SearchBar extends Component {
                         name="input"
                         type="text"
                         autoComplete="off"
-                        onChange={this.handleChange}
-                        value={this.state.input}
+                        onChange={handleChange}
+                        value={input}
                         autoFocus
                         placeholder="Search images and photos"
                     />
@@ -39,7 +37,7 @@ class SearchBar extends Component {
             </header>
         );
     };
-}
+
 
 
 

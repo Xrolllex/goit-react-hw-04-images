@@ -1,56 +1,49 @@
-import { Component } from "react";
+import { useState } from "react";
 import SearchBar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Modal from "./Modal/Modal"
 
 
 
-class App extends Component {
-  state = {
-    images: [],
-    currentPage: 1,
-    searchQuery: '',
-    isLoading: false,
-    error: null,
-    showModal: false,
-    largeImageURL: '',
-  };
+const App = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [modalImg, setModalImg] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState(1);
 
 
-  getInputValue = (handleValue) => {
-    this.setState ({ inputValue: handleValue, page: 1 })
+
+  const getInputValue = (handleValue) => {
+    setInputValue(handleValue);
+            setPage(1);
 }
 
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }))
+const toggleModal = () => {
+    setShowModal((showModal) => !showModal);
 }
 
-getLargeImg = url => {
-    this.toggleModal();
-    this.setState({ modalImg: url });
+const getLargeImg = url => {
+    toggleModal();
+    setModalImg(url);
 }
 
-loadMoreBtn = () => {
-    this.setState(prevState => ({
-        page: prevState.page + 1,
-        }));
+const loadMoreBtn = () => {
+  setPage((prevState) => prevState + 1);
     }
 
 
 
-  render() {
-        const { modalImg, showModal ,page} = this.state;
 
         return (
             <>
-                <SearchBar getInputValue={this.getInputValue}/>
-                <ImageGallery inputValue={this.state.inputValue} onClick={this.getLargeImg} loadMoreBtn={this.loadMoreBtn} page={ page}/>
-                {showModal && <Modal url={modalImg} onClose={this.toggleModal} />} 
+                <SearchBar getInputValue={getInputValue}/>
+                <ImageGallery inputValue={inputValue} onClick={getLargeImg} loadMoreBtn={loadMoreBtn} page={ page}/>
+                {showModal && <Modal url={modalImg} onClose={toggleModal} />} 
             </>
         )
     }
-}
+
 
 
 export default App;

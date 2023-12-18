@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import css from './imageGalleryItem.module.css';
 
- function ImageGalleryItem({ url, tags, onClick }) {
+ const ImageGalleryItem = ({ url, tags, onClick }) => {
     return (
         <>
             <li className={css.imageGalleryItem}>
