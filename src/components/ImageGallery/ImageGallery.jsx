@@ -71,7 +71,7 @@ const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
                             />
                         ))}
                     </ul>
-                    {this.state.images.length !== 0 ? (
+                    {images.length !== 0 ? (
                         <div style={{textAlign: 'center'}}><Button onClick={loadMoreBtn} />
                         </div>
                     ) : (
