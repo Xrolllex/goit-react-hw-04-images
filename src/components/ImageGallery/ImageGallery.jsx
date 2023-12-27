@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect,useRef } from "react";
 import PropTypes from "prop-types";
 import css from "./imageGallery.module.css"
 import getImages from "../Api/Api";
@@ -8,11 +8,20 @@ import Loader from "../Loader/Loader";
 
 
 
-const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
+const ImageGallery = ({ onClick, inputValue, loadMoreBtn }) => {
     const [images, setImages] = useState([]);
     const [status, setStatus] = useState("idle");
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const prevInputValue = useRef("");
 
+    useEffect(() => {
+        if (inputValue !== prevInputValue.current) {
+            setImages([]);
+            setPage(1);
+            prevInputValue.current = inputValue;
+        }
+    }, [inputValue]);
 
     useEffect (() => {
         const fetchLoadMore = async () => {
@@ -24,7 +33,7 @@ const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
                 if(!mounted.current) return
 
                 if(response.hits.length > 0) {
-                    setImages(response.hits)
+                    setImages((prevImages) => [...prevImages, ...response.hits]);
                     setStatus("resolved")
                 } else {
                     setStatus("rejected")
@@ -42,7 +51,7 @@ const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
         const mounted = {current: true}
 
 
-        if(page >1 ) {
+        if(page >=1 ) {
             fetchLoadMore()
         }
 
@@ -53,14 +62,20 @@ const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
 
     }, [inputValue, page])
 
-    if(loading) {
-        return <Loader />
+    const loadMoreHandler = () => {
+        setPage((prevPage) => prevPage + 1);
+        loadMoreBtn();
+    };
+
+
+    if (loading && images.length === 0) {
+        return <Loader />;
     }
 
 
-    if (status === "resolved") {
-        return (
-            <>
+   
+            return (
+                <>
                     <ul className={css.imageGallery}>
                         {images.map(({ id, largeImageURL, tags }) => (
                             <ImageGalleryItem
@@ -71,18 +86,16 @@ const ImageGallery = ({ onClick, inputValue, page, loadMoreBtn }) => {
                             />
                         ))}
                     </ul>
-                    {images.length !== 0 ? (
-                        <div style={{textAlign: 'center'}}><Button onClick={loadMoreBtn} />
+                    {status === "resolved" && images.length !== 0 && (
+                        <div style={{ textAlign: "center" }}>
+                            <Button onClick={loadMoreHandler} />
                         </div>
-                    ) : (
-                        <p>No more images</p>
                     )}
-
-            </>
-        );
-    }
-    return null;
-};
+                    {status === "rejected" && <p>No more images</p>}
+                </>
+            );
+        };
+   
     
 
   
